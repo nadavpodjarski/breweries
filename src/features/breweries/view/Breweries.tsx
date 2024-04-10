@@ -16,12 +16,10 @@ export const Breweries = () => {
     search: searchValue.current,
   });
 
-  const resetPage = async () => setPage(1);
-
   const onSearch = async () => {
     if (!searchValue.current.trim()) return;
-    await resetPage();
     if (page === 1) refetch();
+    else setPage(1);
   };
 
   const handlePreviousPage = () => {
