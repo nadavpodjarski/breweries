@@ -47,7 +47,11 @@ export const Breweries = () => {
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     searchValue.current = value;
-    if (!value.trim()) setPage(1);
+    if (!value.trim()) {
+      if (page === 1) refetch();
+      else setPage(1);
+      setPage(1);
+    }
   };
 
   if (isError) return <ErrorView />;
