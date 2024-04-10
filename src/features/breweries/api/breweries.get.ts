@@ -36,23 +36,18 @@ export const useFetchBreweiers = ({
   pageSize,
   page,
   enabled,
-}: FetchBreweriesArgs) =>
-  useQuery({
-    queryFn: () => fetchBreweries({ page, pageSize }),
-    queryKey: ["breweiers", page],
-    keepPreviousData: true,
-    enabled,
-  });
-
-export const useSearchBreweiers = ({
-  pageSize,
   search,
-  page,
-  enabled,
 }: SearchBrewerisArgs) =>
-  useQuery({
-    queryFn: () => searchBreweries({ page, pageSize, search }),
-    queryKey: ["breweiers_search", page, search],
-    keepPreviousData: true,
-    enabled,
-  });
+  search
+    ? useQuery({
+        queryFn: () => searchBreweries({ page, pageSize, search }),
+        queryKey: ["breweiers_search", page, search],
+        keepPreviousData: true,
+        enabled,
+      })
+    : useQuery({
+        queryFn: () => fetchBreweries({ page, pageSize }),
+        queryKey: ["breweiers", page, search],
+        keepPreviousData: true,
+        enabled,
+      });

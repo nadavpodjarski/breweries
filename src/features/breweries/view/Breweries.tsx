@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { BreweriesGrid } from "../components";
-import { useFetchBreweiers, useSearchBreweiers } from "../api";
+import { useFetchBreweiers } from "../api";
 import { Button, ErrorView, Loader } from "../../../components";
 import styled from "styled-components";
 
@@ -8,82 +8,50 @@ const DEFAULT_PAGE_SIZE = 20;
 
 export const Breweries = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [showSearchData, setShowSearchData] = useState(false);
   const [page, setPage] = useState(1);
-  const [searchPage, setSearchPage] = useState(1);
 
-  const {
-    data = [],
-    isError,
-    isFetching,
-  } = useFetchBreweiers({
+  const { data, isError, isFetching, refetch } = useFetchBreweiers({
     pageSize: DEFAULT_PAGE_SIZE,
     page,
-    enabled: !showSearchData,
-  });
-
-  const {
-    data: searchData = [],
-    isError: isSearchError,
-    isFetching: isSearchFetching,
-    refetch: searchRefetch,
-  } = useSearchBreweiers({
-    pageSize: DEFAULT_PAGE_SIZE,
     search: searchValue,
-    page: searchPage,
     enabled: false,
   });
 
-  const onSearch = () => {
+  const resetPage = async () => setPage(1);
+
+  const onSearch = async () => {
     if (!searchValue.trim()) return;
-    setShowSearchData(true);
-    setSearchPage(1);
+    await resetPage();
+    refetch();
   };
 
   useEffect(() => {
-    if (showSearchData && searchValue.trim()) {
-      searchRefetch();
-    }
-  }, [searchPage, showSearchData, searchRefetch]);
+    refetch();
+  }, [page]);
 
-  const handlePrevious = () => {
-    if (showSearchData) {
-      setSearchPage((prevPage) => (prevPage > 1 ? prevPage - 1 : 1));
-    } else {
-      setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : 1));
-    }
+  const handlePreviousPage = () => {
+    setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : 1));
   };
 
   const handleNextPage = () => {
-    if (showSearchData) {
-      setSearchPage((prevPage) => prevPage + 1);
-    } else {
-      setPage((prevPage) => prevPage + 1);
-    }
+    setPage((prevPage) => prevPage + 1);
   };
 
   const disableNext = () => {
-    if (showSearchData) return searchData?.length < DEFAULT_PAGE_SIZE;
     return data?.length < DEFAULT_PAGE_SIZE;
   };
 
   const disablePrevious = () => {
-    if (showSearchData) return searchPage === 1;
     return page === 1;
   };
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const trimmedValue = value.trim();
-    setSearchValue(trimmedValue);
-    if (!trimmedValue) {
-      setShowSearchData(false);
-      setPage(1);
-      setSearchPage(1);
-    }
+    setSearchValue(value);
+    if (!value.trim()) setPage(1);
   };
 
-  if (isError || isSearchError) return <ErrorView />;
+  if (isError) return <ErrorView />;
 
   return (
     <>
@@ -93,7 +61,7 @@ export const Breweries = () => {
           <Button onClick={onSearch}>Search</Button>
         </SearchContainer>
         <PaginationContainer>
-          <Button disabled={disablePrevious()} onClick={handlePrevious}>
+          <Button disabled={disablePrevious()} onClick={handlePreviousPage}>
             Previous
           </Button>
           <Button disabled={disableNext()} onClick={handleNextPage}>
@@ -101,10 +69,10 @@ export const Breweries = () => {
           </Button>
         </PaginationContainer>
       </Header>
-      {isFetching || isSearchFetching ? (
+      {isFetching || data === undefined ? (
         <Loader />
       ) : (
-        <BreweriesGrid breweries={showSearchData ? searchData : data} />
+        <BreweriesGrid breweries={data} />
       )}
     </>
   );
