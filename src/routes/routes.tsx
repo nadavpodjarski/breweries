@@ -1,4 +1,4 @@
 export const routes = {
-  breweries: "breweries",
+  breweries: "/",
   favoriteBreweries: "favorite-breweries",
 };

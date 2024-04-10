@@ -20,7 +20,7 @@ export const appRoutes = [
   },
   {
     path: "*",
-    element: <Navigate to={`/${routes.breweries}`} replace />,
+    element: <Navigate to={`${routes.breweries}`} />,
   },
 ];
 

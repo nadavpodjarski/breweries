@@ -1,15 +1,15 @@
+import { Navigate, RouteObject } from "react-router-dom";
 import { routes } from "../../../routes/routes";
 import { Breweries, FavoriteBreweries } from "../view";
 
-export const breweriesRoutes = [
+export const breweriesRoutes: RouteObject[] = [
   {
     path: routes.breweries,
     element: <Breweries />,
-    children: [],
+    index: true,
   },
   {
     path: routes.favoriteBreweries,
     element: <FavoriteBreweries />,
-    children: [],
   },
 ];
