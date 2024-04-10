@@ -21,12 +21,8 @@ export const Breweries = () => {
   const onSearch = async () => {
     if (!searchValue.current.trim()) return;
     await resetPage();
-    refetch();
+    if (page === 1) refetch();
   };
-
-  useEffect(() => {
-    refetch();
-  }, [page]);
 
   const handlePreviousPage = () => {
     setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : 1));
@@ -50,7 +46,6 @@ export const Breweries = () => {
     if (!value.trim()) {
       if (page === 1) refetch();
       else setPage(1);
-      setPage(1);
     }
   };
 
