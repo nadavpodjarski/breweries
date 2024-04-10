@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { routes } from "../../routes/routes";
 import { CustomLink } from "../link";

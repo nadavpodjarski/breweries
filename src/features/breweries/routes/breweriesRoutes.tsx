@@ -1,4 +1,4 @@
-import { Navigate, RouteObject } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
 import { routes } from "../../../routes/routes";
 import { Breweries, FavoriteBreweries } from "../view";
 
