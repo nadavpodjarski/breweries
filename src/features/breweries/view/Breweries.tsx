@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BreweriesGrid } from "../components";
 import { useFetchBreweiers } from "../api";
 import { Button, ErrorView, Loader } from "../../../components";
@@ -7,20 +7,19 @@ import styled from "styled-components";
 const DEFAULT_PAGE_SIZE = 20;
 
 export const Breweries = () => {
-  const [searchValue, setSearchValue] = useState("");
+  const searchValue = useRef("");
   const [page, setPage] = useState(1);
 
   const { data, isError, isFetching, refetch } = useFetchBreweiers({
     pageSize: DEFAULT_PAGE_SIZE,
     page,
-    search: searchValue,
-    enabled: false,
+    search: searchValue.current,
   });
 
   const resetPage = async () => setPage(1);
 
   const onSearch = async () => {
-    if (!searchValue.trim()) return;
+    if (!searchValue.current.trim()) return;
     await resetPage();
     refetch();
   };
@@ -47,7 +46,7 @@ export const Breweries = () => {
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setSearchValue(value);
+    searchValue.current = value;
     if (!value.trim()) setPage(1);
   };
 
@@ -57,7 +56,7 @@ export const Breweries = () => {
     <>
       <Header>
         <SearchContainer>
-          <input value={searchValue} onChange={handleOnChange} />
+          <input onChange={handleOnChange} />
           <Button onClick={onSearch}>Search</Button>
         </SearchContainer>
         <PaginationContainer>
