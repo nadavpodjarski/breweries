@@ -4,22 +4,23 @@ import { useFetchBreweiers } from "../api";
 import { Button, ErrorView, Loader } from "../../../components";
 import styled from "styled-components";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 30;
 
 export const Breweries = () => {
   const searchValue = useRef("");
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const { data, isError, isFetching, refetch } = useFetchBreweiers({
+  const { data, isError, isFetching } = useFetchBreweiers({
     pageSize: DEFAULT_PAGE_SIZE,
     page,
-    search: searchValue.current,
+    search: searchTerm,
   });
 
   const onSearch = async () => {
     if (!searchValue.current.trim()) return;
-    if (page === 1) refetch();
-    else setPage(1);
+    setSearchTerm(searchValue.current);
+    setPage(1);
   };
 
   const handlePreviousPage = () => {
@@ -42,8 +43,8 @@ export const Breweries = () => {
     const { value } = e.target;
     searchValue.current = value;
     if (!value.trim()) {
-      if (page === 1) refetch();
-      else setPage(1);
+      setSearchTerm(searchValue.current);
+      setPage(1);
     }
   };
 
